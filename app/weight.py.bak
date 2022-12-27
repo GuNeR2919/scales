@@ -1,0 +1,50 @@
+import re, sys
+import socket
+import time
+
+HOST = '192.168.6.18'  # The server's hostname or IP address
+PORT = 11001        # The port used by the server
+
+socket.setdefaulttimeout(0.5)
+sock_scales = None
+scales_connected = False
+weight_rcv = None
+
+def close_scal_s():
+    global scales_connected, sock_scales
+    scales_connected = False
+    sock_scales.close()
+    sock_scales = None
+    time.sleep(2)
+
+while True:
+    while not scales_connected:
+        print('Trying connect to scales')
+        try:
+            sock_scales = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        except OSError as msg:
+            sock_scales = None
+            print('Socket creation error - ', msg)
+            continue
+        try:
+            sock_scales.connect((HOST, PORT))
+            scales_connected = True
+            print('Scales connected')
+        except OSError as msg:
+            print('Connection error - ', msg)
+            close_scal_s()
+            continue
+    try:
+        weight_rcv = sock_scales.recv(15)
+    except OSError as msg:
+        print('Recive error - ', msg)
+        close_scal_s()
+        continue
+    weight_rcv = re.search(r"[^0|\D]\d*", repr(weight_rcv))
+    if weight_rcv:
+        if weight_rcv.group().isnumeric():
+            weight_cur = weight_rcv.group()
+            print(weight_cur)
+    else:
+        weight_cur = 0
+        print (weight_cur)

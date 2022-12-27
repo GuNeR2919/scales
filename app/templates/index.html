@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <script src="static/js/application.js"></script>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+    .row {
+      /* border: 5px outset red; */
+      background-color: #f3f3f3;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      font-family: sans-serif;
+    }
+    .title {
+      font-size: 4vw;
+    }
+    .weight {
+      font-size: 10vw;
+    }
+  </style>
+</head>
+<body>
+  <a style="text-decoration: none;" href="{{ url_for('weights') }}">
+    <div class="container" id="content">
+      <div class="row">
+        <div class="title">
+          Current weight (kg)
+        </div>
+        <div id="weight" class="weight">Connecting to scales...</div>
+      </div>
+    </div>
+  </a>
+</body>
+</html>
