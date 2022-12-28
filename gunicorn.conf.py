@@ -5,4 +5,4 @@ timeout = 120
 access-logfile
 error-logfile
 scales:app
-worker-tmp-dir=/dev/shm
+worker-tmp-dir = /dev/shm
