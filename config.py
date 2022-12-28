@@ -9,5 +9,5 @@ class Config(object):
 #    'mysql+pymysql://scales:\'%zN.n3S\@IEc=Djx@192.168.6.136:3306/scales'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     WEIGHTS_PER_PAGE = 10
-    SCALES_HOST = '192.168.6.18'
+    SCALES_HOST = '192.168.2.10'
     SCALES_PORT = 11001
