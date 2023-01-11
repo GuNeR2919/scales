@@ -6,4 +6,3 @@ timeout = 30
 ccesslog = 'logs/gunicorn.log'
 pidfile = 'gunicorn.pid'
 errorlog = 'logs/gunicorn.log'
-worker-tmp-dir = '/dev/shm'
