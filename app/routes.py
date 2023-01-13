@@ -1,7 +1,6 @@
 from time import sleep
-from flask_socketio import SocketIO, emit
-from flask import render_template, url_for, copy_current_request_context, \
-    request
+from flask_socketio import SocketIO
+from flask import render_template, url_for, request
 from threading import Thread, Event
 from app import app
 from app import scales_daemon
@@ -18,10 +17,10 @@ thread_stop_event = Event()
 
 def get_weight():
     """
-    Send curent weight to client
+    Send current weight to client
     """
     while not thread_stop_event.isSet():
-        print(f'Client: recieved weight is {scales_daemon.weight}')
+        print(f'Client: received weight is {scales_daemon.weight}')
         socketio.emit('weight', {'data': scales_daemon.weight})
         sleep(1)
 
@@ -57,4 +56,4 @@ def test_connect():
 
 @socketio.on('disconnect')
 def test_disconnect():
-    print('Client dosconnected')
+    print('Client disconnected')
