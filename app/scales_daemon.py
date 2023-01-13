@@ -1,13 +1,14 @@
 import socket
-import os
 import re
-import sys
 from time import sleep
-import select
 from app import app, db
 from threading import Thread
-from datetime import datetime, time, date
+from datetime import datetime
 from app.models import Weight
+
+scales_con = None
+scales_sock = None
+weight = None
 
 def close_scales_sock():    # destroy scales socket function
     global scales_con, scales_sock, weight
@@ -38,7 +39,6 @@ def bgscl_weight(weight):
 
 def get_weight():
     global scales_con, scales_sock, weight
-
     time_stamp = 0
     time_cur = 0
     weight_stamp = 0
@@ -57,20 +57,19 @@ def get_weight():
                                          app.config['SCALES_PORT']))
                     scales_con = True
                 except BaseException as msg:
-#                    print('Daemon: cant connect to scales -', msg)
+                    print('Daemon: cant connect to scales -', msg)
                     scales_con = False
             else:
                 try:
                     weight_rcv = scales_sock.recv(51).decode('ascii')
                     if not weight_rcv:
                         weight = 'Connecting to scales ...'
-                        close_scales_sock();
+                        close_scales_sock()
                         continue
                     time_cur = int(datetime.now().timestamp())
                     time_pid = int(datetime.now().strftime("%y%m%d%H%M%S"))
-                    print('Daemon: recieved -', weight_rcv)
+                    print('Daemon: received -', weight_rcv)
                     smscl, smwght = smscl_weight(weight_rcv)
-#                    bgscl, bgwght = bgscl_weight(weight_rcv)
                     if smscl:
                         weight = smwght
                         if weight_stamp != smwght:
@@ -93,7 +92,7 @@ def get_weight():
                     else:
                         weight = 0
                 except BaseException as msg:
-                    print('Daemon: recieved the error -', msg)
+                    print('Daemon: received the error -', msg)
                     weight = 'Connecting to scales...'
                     close_scales_sock()
                     continue

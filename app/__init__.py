@@ -11,9 +11,3 @@ migrate = Migrate(app, db)
 moment = Moment(app)
 
 from app import routes, models
-
-#while True:
-#    print("sdsdsd")
-#    time.sleep(1)
-
-
