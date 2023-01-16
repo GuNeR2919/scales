@@ -41,7 +41,6 @@ def bgscl_weight(wght):
 def get_weight():
     global scales_con, weight
     time_stamp = 0
-    time_cur = 0
     weight_stamp = 0
     db_new = True
     scales_con = False
