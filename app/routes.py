@@ -35,18 +35,18 @@ def index():
 @app.route('/weights')
 def weights():
     page = request.args.get('page', 1, type=int)
-    weights = Weight.query.order_by(
+    wght = Weight.query.order_by(
         Weight.mtime.desc()).paginate(
             page=page, per_page=app.config['WEIGHTS_PER_PAGE'],
             error_out=False)
-    next_url = url_for('weights', page=weights.next_num) \
-        if weights.has_next else None
-    prev_url = url_for('weights', page=weights.prev_num) \
-        if weights.has_prev else None
-    for w in weights.items:
+    next_url = url_for('weights', page=wght.next_num) \
+        if wght.has_next else None
+    prev_url = url_for('weights', page=wght.prev_num) \
+        if wght.has_prev else None
+    for w in wght.items:
         w.mtime = datetime.utcfromtimestamp(w.mtime)
     return render_template('weights.html', title='Weights list',
-                           weights=weights.items, next_url=next_url,
+                           weights=wght.items, next_url=next_url,
                            prev_url=prev_url)
 
 
