@@ -15,6 +15,7 @@ socketio = SocketIO(app, async_mode=None, logger=False, engine_logger=False)
 thread = Thread()
 thread_stop_event = Event()
 
+
 def get_weight():
     """
     Send current weight to client
@@ -24,10 +25,12 @@ def get_weight():
         socketio.emit('weight', {'data': scales_daemon.weight})
         sleep(1)
 
+
 @app.route('/')
 @app.route('/index')
 def index():
     return render_template('index.html')
+
 
 @app.route('/weights')
 def weights():
@@ -46,6 +49,7 @@ def weights():
                            weights=weights.items, next_url=next_url,
                            prev_url=prev_url)
 
+
 @socketio.on('connect')
 def test_connect():
     global thread
@@ -53,6 +57,7 @@ def test_connect():
     if not thread.is_alive():
         print('Starting client thread')
         thread = socketio.start_background_task(get_weight)
+
 
 @socketio.on('disconnect')
 def test_disconnect():

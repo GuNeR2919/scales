@@ -10,6 +10,7 @@ scales_con = None
 scales_sock = None
 weight = None
 
+
 def close_scales_sock():    # destroy scales socket function
     global scales_con, scales_sock, weight
     scales_con = False
@@ -20,6 +21,7 @@ def close_scales_sock():    # destroy scales socket function
     sleep(2)
     print('Daemon: Close socket function call.')
 
+
 def smscl_weight(weight):
     weight = re.search(r"^[0|w]*([^0|\D]\d*)\skg", weight)
     if weight:
@@ -29,6 +31,7 @@ def smscl_weight(weight):
     else:
         return False, 0
 
+
 def bgscl_weight(weight):
    weight = re.search("r(?<=\u000203)\d{6}", repr(weight))
    if weight:
@@ -36,6 +39,7 @@ def bgscl_weight(weight):
        if weight.group().isnumeric():
             weight = str(weight.group())
             return True, weight
+
 
 def get_weight():
     global scales_con, scales_sock, weight
@@ -49,7 +53,6 @@ def get_weight():
     try:
         while True:
             if not scales_con:
-#                print('Daemon: trying to create socket')
                 try:
                     scales_sock = \
                         socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -100,6 +103,7 @@ def get_weight():
         close_scales_sock()
         print('Exit')
     print('I got end of Daemon function')
+
 
 th = Thread(target=get_weight)
 th.daemon = True
