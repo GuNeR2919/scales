@@ -14,12 +14,13 @@ app.config['DEBUG'] = True
 socketio = SocketIO(app, async_mode=None, logger=False, engine_logger=False)
 
 
-def get_weight():
+def get_weight(job):
     """
     Send current weight to client
     """
-    print(f'Client: received weight is {scales_daemon.weight}')
-    socketio.emit('weight', {'data': scales_daemon.weight})
+    wght = job.meta.get()
+    print(f'Client: received weight is {wght}')
+#    socketio.emit('weight', {'data': scales_daemon.weight})
     sleep(1)
 
 
@@ -59,3 +60,4 @@ def test_disconnect():
     print('Client disconnected')
 
 
+rq_job = app.task_queue.enqueue('app.scales_daemon.get_weight')
