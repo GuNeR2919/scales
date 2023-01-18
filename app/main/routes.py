@@ -6,6 +6,8 @@ from app import create_app
 from app.models import Weight
 from app.main import bp
 
+print('routes.py')
+
 app = create_app()
 
 app.config['SECRET_KEY'] = 'secret!wtf'
