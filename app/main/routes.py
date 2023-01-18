@@ -1,38 +1,35 @@
 from time import sleep
+from datetime import datetime
 from flask_socketio import SocketIO
 from flask import render_template, url_for, request
-from threading import Thread, Event
-from app import app
-from app import scales_daemon
+from app import create_app
 from app.models import Weight
-from datetime import datetime
+from app.main import bp
+
+app = create_app()
 
 app.config['SECRET_KEY'] = 'secret!wtf'
 app.config['DEBUG'] = True
 
 socketio = SocketIO(app, async_mode=None, logger=False, engine_logger=False)
 
-thread = Thread()
-thread_stop_event = Event()
-
 
 def get_weight():
     """
     Send current weight to client
     """
-    while not thread_stop_event.isSet():
-        print(f'Client: received weight is {scales_daemon.weight}')
-        socketio.emit('weight', {'data': scales_daemon.weight})
-        sleep(1)
+    print(f'Client: received weight is {scales_daemon.weight}')
+    socketio.emit('weight', {'data': scales_daemon.weight})
+    sleep(1)
 
 
-@app.route('/')
-@app.route('/index')
+@bp.route('/')
+@bp.route('/index')
 def index():
     return render_template('index.html')
 
 
-@app.route('/weights')
+@bp.route('/weights')
 def weights():
     page = request.args.get('page', 1, type=int)
     wght = Weight.query.order_by(
@@ -52,13 +49,13 @@ def weights():
 
 @socketio.on('connect')
 def test_connect():
-    global thread
     print('Client connected')
-    if not thread.is_alive():
-        print('Starting client thread')
-        thread = socketio.start_background_task(get_weight)
+    print('Starting client thread')
+    socketio.start_background_task(get_weight)
 
 
 @socketio.on('disconnect')
 def test_disconnect():
     print('Client disconnected')
+
+

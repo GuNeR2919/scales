@@ -1,5 +1,6 @@
 from app import db
 
+
 class Weight(db.Model):
     rowid = db.Column(db.Integer, primary_key=True)
     mtime = db.Column(db.Integer, index=True, unique=True)

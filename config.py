@@ -12,3 +12,4 @@ class Config(object):
     WEIGHTS_PER_PAGE = 10
     SCALES_HOST = '192.168.6.18'
     SCALES_PORT = 11001
+    REDIS_URL = os.environ.get('REDIS_URL') or 'redis://'

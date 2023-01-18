@@ -1,13 +1,23 @@
 import socket
 import re
 from time import sleep
-from app import app, db
-from threading import Thread
+from app import db, create_app
 from datetime import datetime
 from app.models import Weight
+from rq import get_current_job
+
+app = create_app()
+app.app_context().push()
 
 scales_con = None
 weight = None
+
+
+def _set_got_weight(wght):
+    job = get_current_job()
+    if job:
+        job.meta['weight'] = wght
+        job.save_meta()
 
 
 def close_scales_sock(sc_sock):    # destroy scales socket function
@@ -99,8 +109,3 @@ def get_weight():
         close_scales_sock(scales_sock)
         print('Exit')
     print('I got end of Daemon function')
-
-
-th = Thread(target=get_weight)
-th.daemon = True
-th.start()
