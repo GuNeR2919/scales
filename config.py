@@ -1,4 +1,7 @@
 import os
+
+print('config.py')
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 

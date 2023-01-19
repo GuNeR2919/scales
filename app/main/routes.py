@@ -1,19 +1,13 @@
 from time import sleep
 from datetime import datetime
 from flask_socketio import SocketIO
-from flask import render_template, url_for, request
-from app import create_app
+from flask import render_template, url_for, request, current_app
 from app.models import Weight
 from app.main import bp
 
 print('routes.py')
 
-app = create_app()
-
-app.config['SECRET_KEY'] = 'secret!wtf'
-app.config['DEBUG'] = True
-
-socketio = SocketIO(app, async_mode=None, logger=False, engine_logger=False)
+#socketio = SocketIO(app, async_mode=None, logger=False, engine_logger=False)
 
 
 def get_weight(job):
@@ -50,16 +44,16 @@ def weights():
                            prev_url=prev_url)
 
 
-@socketio.on('connect')
-def test_connect():
-    print('Client connected')
-    print('Starting client thread')
-    socketio.start_background_task(get_weight)
+# @socketio.on('connect')
+# def test_connect():
+#     print('Client connected')
+#     print('Starting client thread')
+#     socketio.start_background_task(get_weight)
 
 
-@socketio.on('disconnect')
-def test_disconnect():
-    print('Client disconnected')
+# @socketio.on('disconnect')
+# def test_disconnect():
+#     print('Client disconnected')
 
 
-rq_job = app.task_queue.enqueue('app.scales_daemon.get_weight')
+rq_job = current_app.task_queue.enqueue('app.scales_daemon.get_weight')

@@ -1,4 +1,5 @@
 from app import db
+print('models.py')
 
 
 class Weight(db.Model):
