@@ -107,6 +107,6 @@ def get_weight():
                     scales_con, smwght = close_scales_sock(scales_sock, scales_con, smwght)
                     continue
     except KeyboardInterrupt:
-        close_scales_sock(scales_sock)
+        close_scales_sock(scales_sock, scales_con, smwght)
         print('Exit')
     print('I got end of Daemon function')
