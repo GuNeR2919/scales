@@ -31,7 +31,7 @@ def weights():
     page = request.args.get('page', 1, type=int)
     wght = Weight.query.order_by(
         Weight.mtime.desc()).paginate(
-            page=page, per_page=app.config['WEIGHTS_PER_PAGE'],
+            page=page, per_page=current_app.config['WEIGHTS_PER_PAGE'],
             error_out=False)
     next_url = url_for('weights', page=wght.next_num) \
         if wght.has_next else None
@@ -54,6 +54,3 @@ def weights():
 # @socketio.on('disconnect')
 # def test_disconnect():
 #     print('Client disconnected')
-
-
-rq_job = current_app.task_queue.enqueue('app.scales_daemon.get_weight')
