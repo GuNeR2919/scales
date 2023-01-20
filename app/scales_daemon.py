@@ -9,9 +9,6 @@ from rq import get_current_job
 app = create_app()
 app.app_context().push()
 
-# scales_con = None
-# weight = None
-
 
 def _set_got_weight(wght):
     job = get_current_job()
@@ -20,13 +17,12 @@ def _set_got_weight(wght):
         job.save_meta()
 
 
-def close_scales_sock(sc_sock, sc_con, wght):    # destroy scales socket function
-    sc_con = False
+def close_scales_sock(sc_sock):
     sc_sock.close()
     wght = 'Connecting to scales...'
     sleep(2)
     print('Daemon: Close socket function call.')
-    return sc_con, wght
+    return False, wght
 
 
 def smscl_weight(wght):
@@ -55,7 +51,7 @@ def get_weight():
     db_new = True
     scales_con = False
     scales_sock = None
-    smwght = 'Connecting to scales...'
+    _set_got_weight('Connecting to the scales...')
     try:
         while True:
             if not scales_con:
@@ -66,15 +62,14 @@ def get_weight():
                                          app.config['SCALES_PORT']))
                     scales_con = True
                 except BaseException as msg:
-                    print('Daemon: cant connect to scales -', msg)
+                    print('Daemon: can\'t connect to the scales -', msg)
                     scales_con = False
-
             else:
                 try:
                     weight_rcv = scales_sock.recv(51).decode('ascii')
                     if not weight_rcv:
-                        smwght = 'Connecting to scales ...'
-                        scales_con, smwght = close_scales_sock(scales_sock, scales_con, smwght)
+                        _set_got_weight('Connecting to the scales ...')
+                        scales_con, smwght = close_scales_sock(scales_sock)
                         continue
                     time_cur = int(datetime.now().timestamp())
                     time_pid = int(datetime.now().strftime("%y%m%d%H%M%S"))
@@ -100,13 +95,13 @@ def get_weight():
                                     db_new = False
                                     print('Daemon: record added to DB')
                     else:
-                        smwght = 0
+                        _set_got_weight(0)
                 except BaseException as msg:
                     print('Daemon: received the error -', msg)
-                    smwght = 'Connecting to scales...'
-                    scales_con, smwght = close_scales_sock(scales_sock, scales_con, smwght)
+                    _set_got_weight('Connecting to the scales...')
+                    scales_con, smwght = close_scales_sock(scales_sock)
                     continue
     except KeyboardInterrupt:
-        close_scales_sock(scales_sock, scales_con, smwght)
+        close_scales_sock(scales_sock)
         print('Exit')
-    print('I got end of Daemon function')
+    print('Daemon function has stopped')
