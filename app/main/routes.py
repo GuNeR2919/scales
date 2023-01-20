@@ -1,7 +1,8 @@
 from time import sleep
 from datetime import datetime
-from flask_socketio import SocketIO
+# from flask_socketio import SocketIO
 from flask import render_template, url_for, request, current_app
+from rq import get_current_job
 from app.models import Weight
 from app.main import bp
 
@@ -23,7 +24,10 @@ def get_weight(job):
 @bp.route('/')
 @bp.route('/index')
 def index():
+    job = get_current_job()
+    print(f'job id is {job}')
     return render_template('index.html')
+
 
 
 @bp.route('/weights')
