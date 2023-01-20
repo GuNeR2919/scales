@@ -81,6 +81,7 @@ def get_weight():
                     print('Daemon: received -', weight_rcv)
                     smscl, smwght = smscl_weight(weight_rcv)
                     if smscl:
+                        _set_got_weight(smwght)
                         if weight_stamp != smwght:
                             time_stamp = time_cur
                             weight_stamp = smwght
