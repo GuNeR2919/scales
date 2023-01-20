@@ -1,4 +1,8 @@
+import redis.exceptions
+import rq.job
+from flask import current_app
 from app import db
+
 print('models.py')
 
 
@@ -13,3 +17,20 @@ class Weight(db.Model):
 
     def __repr__(self):
         return '<Weight {}>'.format(self.weight)
+
+
+class Task(db.Model):
+    id = db.Column(db.String(36), primary_key=True)
+    name = db.Column(db.String(128), index=True)
+    description = db.Column(db.String(128))
+
+    def get_rq_job(self):
+        try:
+            rq_job = rq.job.Job.fetch(self.id, connection=current_app.redis)
+        except (redis.exceptions.RedisError, rq.exceptions.NoSuchJobError):
+            return None
+        return rq_job
+
+    def get_weight(self):
+        job = self.get_rq_job()
+        return job.meta.get('weight', 0) if job is not None else 0
