@@ -9,8 +9,8 @@ from rq import get_current_job
 app = create_app()
 app.app_context().push()
 
-scales_con = None
-weight = None
+# scales_con = None
+# weight = None
 
 
 def _set_got_weight(wght):
@@ -20,13 +20,14 @@ def _set_got_weight(wght):
         job.save_meta()
 
 
-def close_scales_sock(sc_sock):    # destroy scales socket function
-    global scales_con, weight
-    scales_con = False
+def close_scales_sock(sc_sock, sc_con, wght):    # destroy scales socket function
+    # global scales_con, weight
+    sc_con = False
     sc_sock.close()
-    weight = 'Connecting to scales...'
+    wght = 'Connecting to scales...'
     sleep(2)
     print('Daemon: Close socket function call.')
+    return sc_con, wght
 
 
 def smscl_weight(wght):
@@ -49,13 +50,13 @@ def bgscl_weight(wght):
 
 
 def get_weight():
-    global scales_con, weight
+    # global scales_con, weight
     time_stamp = 0
     weight_stamp = 0
     db_new = True
     scales_con = False
     scales_sock = None
-    weight = 'Connecting to scales...'
+    smwght = 'Connecting to scales...'
     try:
         while True:
             if not scales_con:
@@ -73,15 +74,14 @@ def get_weight():
                 try:
                     weight_rcv = scales_sock.recv(51).decode('ascii')
                     if not weight_rcv:
-                        weight = 'Connecting to scales ...'
-                        close_scales_sock(scales_sock)
+                        smwght = 'Connecting to scales ...'
+                        scales_con, smwght = close_scales_sock(scales_sock, scales_con, smwght)
                         continue
                     time_cur = int(datetime.now().timestamp())
                     time_pid = int(datetime.now().strftime("%y%m%d%H%M%S"))
                     print('Daemon: received -', weight_rcv)
                     smscl, smwght = smscl_weight(weight_rcv)
                     if smscl:
-                        weight = smwght
                         if weight_stamp != smwght:
                             time_stamp = time_cur
                             weight_stamp = smwght
@@ -100,11 +100,11 @@ def get_weight():
                                     db_new = False
                                     print('Daemon: record added to DB')
                     else:
-                        weight = 0
+                        smwght = 0
                 except BaseException as msg:
                     print('Daemon: received the error -', msg)
-                    weight = 'Connecting to scales...'
-                    close_scales_sock(scales_sock)
+                    smwght = 'Connecting to scales...'
+                    scales_con, smwght = close_scales_sock(scales_sock, scales_con, smwght)
                     continue
     except KeyboardInterrupt:
         close_scales_sock(scales_sock)
