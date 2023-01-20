@@ -2,7 +2,6 @@ from time import sleep
 from datetime import datetime
 # from flask_socketio import SocketIO
 from flask import render_template, url_for, request, current_app
-from rq import get_current_job
 from app.models import Weight, Task
 from app.main import bp
 
