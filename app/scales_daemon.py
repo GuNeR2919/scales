@@ -21,7 +21,6 @@ def _set_got_weight(wght):
 
 
 def close_scales_sock(sc_sock, sc_con, wght):    # destroy scales socket function
-    # global scales_con, weight
     sc_con = False
     sc_sock.close()
     wght = 'Connecting to scales...'
