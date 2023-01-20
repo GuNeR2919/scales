@@ -33,9 +33,9 @@ def weights():
         Weight.mtime.desc()).paginate(
             page=page, per_page=current_app.config['WEIGHTS_PER_PAGE'],
             error_out=False)
-    next_url = url_for('weights', page=wght.next_num) \
+    next_url = url_for('main.weights', page=wght.next_num) \
         if wght.has_next else None
-    prev_url = url_for('weights', page=wght.prev_num) \
+    prev_url = url_for('main.weights', page=wght.prev_num) \
         if wght.has_prev else None
     for w in wght.items:
         w.mtime = datetime.utcfromtimestamp(w.mtime)
