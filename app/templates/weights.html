@@ -41,9 +41,11 @@
     <a href="{{ url_for('main.index') }}"> Back to scales</a>
     <table class="styled-table">
       <thead>
-        <th>ID</th>
-        <th>Date</th>
-        <th>Weight</th>
+        <tr>
+          <th>ID</th>
+          <th>Date</th>
+          <th>Weight</th>
+        </tr>
       </thead>
       <tbody>
         {% for weight in weights %}
