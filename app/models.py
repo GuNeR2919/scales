@@ -1,5 +1,5 @@
-import redis.exceptions
-import rq.job
+import redis
+import rq
 from flask import current_app
 from app import db
 
