@@ -1,13 +1,13 @@
 import socket
 import re
 from time import sleep
-from app import db, create_app
+from app import db, create_app, app
 from datetime import datetime
 from app.models import Weight
 from rq import get_current_job
 
-app = create_app()
-app.app_context().push()
+# app = create_app()
+# app.app_context().push()
 
 scales_con = None
 weight = None
@@ -68,6 +68,7 @@ def get_weight():
                 except BaseException as msg:
                     print('Daemon: cant connect to scales -', msg)
                     scales_con = False
+
             else:
                 try:
                     weight_rcv = scales_sock.recv(51).decode('ascii')
