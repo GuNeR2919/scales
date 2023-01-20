@@ -10,6 +10,9 @@ print('routes.py')
 
 #socketio = SocketIO(app, async_mode=None, logger=False, engine_logger=False)
 
+job = get_current_job()
+print(f'job id is {job}')
+
 
 def get_weight(job):
     """
@@ -24,8 +27,7 @@ def get_weight(job):
 @bp.route('/')
 @bp.route('/index')
 def index():
-    job = get_current_job()
-    print(f'job id is {job}')
+
     return render_template('index.html')
 
 
