@@ -4,10 +4,12 @@ from datetime import datetime
 from flask import render_template, url_for, request, current_app
 from app.models import Weight, Task
 from app.main import bp
+# from rq.registry import StartedJobRegistry
+# from rq.command import send_stop_job_command
 
 print('routes.py')
 
-#socketio = SocketIO(app, async_mode=None, logger=False, engine_logger=False)
+# socketio = SocketIO(app, async_mode=None, logger=False, engine_logger=False)
 
 
 def get_weight(job):
@@ -23,9 +25,12 @@ def get_weight(job):
 @bp.route('/')
 @bp.route('/index')
 def index():
-
+    # running_task = Task.lunch_task()
+    # registry = StartedJobRegistry('scales-task', connection=current_app.redis)
+    # running_job_ids = registry.get_job_ids()
+    # if running_job_ids:
+    #     print(running_job_ids)
     return render_template('index.html')
-
 
 
 @bp.route('/weights')
@@ -56,3 +61,9 @@ def weights():
 # @socketio.on('disconnect')
 # def test_disconnect():
 #     print('Client disconnected')
+
+# running_task = Task.lunch_task()
+# registry = StartedJobRegistry('scales-task', connection=current_app.redis)
+# running_job_ids = registry.get_job_ids()
+# if running_job_ids:
+#     print(running_job_ids)

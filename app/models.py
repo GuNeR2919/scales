@@ -35,3 +35,21 @@ class Task(db.Model):
         job = self.get_rq_job()
         job.refresh()
         return job.meta if job is not None else 0
+
+#    @staticmethod
+    def lunch_task(self):
+        rq_job = current_app.task_queue.enqueue('app.scales_daemon.get_weight')
+        task = Task(id=rq_job.get_id(), name=self, description='ID of get_weight task')
+        db.session.add(task)
+        db.session.commit()
+        return task
+
+    def get_task_id(self):
+        return Task.query.filter_by(name=self).first()
+
+    # def stop_task(self):
+    #     registry = StartedJobRegistry('scales-task', connection=app.redis)
+    #     running_job_ids = registry.get_job_ids()
+    #     if running_job_ids:
+    #         print(running_job_ids)
+    #         send_stop_job_command(app.redis, running_job_ids[0])
