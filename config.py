@@ -1,4 +1,6 @@
 import os
+from uuid import uuid4
+from datetime import datetime
 
 print('config.py')
 
@@ -16,3 +18,5 @@ class Config(object):
     SCALES_HOST = '192.168.6.18'
     SCALES_PORT = 11001
     REDIS_URL = os.environ.get('REDIS_URL') or 'redis://192.168.6.136'
+    UUID = uuid4()
+    TIMEST = datetime.now().timestamp()

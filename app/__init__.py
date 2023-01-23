@@ -23,6 +23,7 @@ def create_app(config_class=Config):
 
     app.redis = Redis.from_url(app.config['REDIS_URL'])
     app.task_queue = rq.Queue('scales-task', connection=app.redis)
+    app.task_queue.empty()
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)

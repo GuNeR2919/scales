@@ -13,22 +13,24 @@ def make_shell_context():
     return {'db': db, 'Weight': Weight, 'Task': Task}
 
 
-registry = StartedJobRegistry('scales-task', connection=app.redis)
-running_job_ids = registry.get_job_ids()
-if running_job_ids:
-    print(running_job_ids)
-    send_stop_job_command(app.redis, running_job_ids[0])
+with app.app_context():
+    registry = StartedJobRegistry('scales-task', connection=app.redis)
+    running_job_ids = registry.get_job_ids()
+    if running_job_ids:
+        print('Stopping job:')
+        print(*running_job_ids)
+        send_stop_job_command(app.redis, running_job_ids[0])
+    gwght_task = Task.launch_task()
 
-# rq_job = app.task_queue.enqueue('app.scales_daemon.get_weight')
-# task = Task(id=rq_job.get_id(), name='get_weight', description='ID of get_weight task')
-# db.session.add(task)
+
 # try:
 #     with app.app_context():
-#         running_task = Task.lunch_task()
+#         gwght_task = Task.lunch_task(app.config['UUID'], )
 #         registry = StartedJobRegistry('scales-task', connection=app.redis)
 #         running_job_ids = registry.get_job_ids()
 #         if running_job_ids:
 #             print(running_job_ids)
+#             print(gwght_task.get_rq_job())
 # except KeyboardInterrupt:
 #     registry = StartedJobRegistry('scales-task', connection=app.redis)
 #     running_job_ids = registry.get_job_ids()

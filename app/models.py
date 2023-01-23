@@ -2,6 +2,7 @@ import redis
 import rq
 from flask import current_app
 from app import db
+from rq.command import send_stop_job_command
 
 print('models.py')
 
@@ -21,8 +22,17 @@ class Weight(db.Model):
 
 class Task(db.Model):
     id = db.Column(db.String(36), primary_key=True)
-    name = db.Column(db.String(128), index=True)
-    description = db.Column(db.String(128))
+    print('Class Task created')
+    # main_process_id = db.Column(db.String(128), index=True)
+    # timestamp = db.Column(db.Integer())
+
+    @staticmethod
+    def launch_task():
+        rq_job = current_app.task_queue.enqueue('app.scales_daemon.get_weight')
+        task = Task(id=rq_job.get_id())
+        db.session.add(task)
+        db.session.commit()
+        return task
 
     def get_rq_job(self):
         try:
@@ -36,20 +46,5 @@ class Task(db.Model):
         job.refresh()
         return job.meta if job is not None else 0
 
-#    @staticmethod
-    def lunch_task(self):
-        rq_job = current_app.task_queue.enqueue('app.scales_daemon.get_weight')
-        task = Task(id=rq_job.get_id(), name=self, description='ID of get_weight task')
-        db.session.add(task)
-        db.session.commit()
-        return task
-
-    def get_task_id(self):
-        return Task.query.filter_by(name=self).first()
-
-    # def stop_task(self):
-    #     registry = StartedJobRegistry('scales-task', connection=app.redis)
-    #     running_job_ids = registry.get_job_ids()
-    #     if running_job_ids:
-    #         print(running_job_ids)
-    #         send_stop_job_command(app.redis, running_job_ids[0])
+    def stop_task(self):
+        send_stop_job_command(current_app.redis, self.id)

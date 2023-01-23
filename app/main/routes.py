@@ -25,11 +25,6 @@ def get_weight(job):
 @bp.route('/')
 @bp.route('/index')
 def index():
-    # running_task = Task.lunch_task()
-    # registry = StartedJobRegistry('scales-task', connection=current_app.redis)
-    # running_job_ids = registry.get_job_ids()
-    # if running_job_ids:
-    #     print(running_job_ids)
     return render_template('index.html')
 
 
@@ -62,8 +57,3 @@ def weights():
 # def test_disconnect():
 #     print('Client disconnected')
 
-# running_task = Task.lunch_task()
-# registry = StartedJobRegistry('scales-task', connection=current_app.redis)
-# running_job_ids = registry.get_job_ids()
-# if running_job_ids:
-#     print(running_job_ids)
